@@ -1,17 +1,30 @@
 import { StatusBar } from "expo-status-bar";
-import React, {useState} from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  ScrollView,
+  FlatList,
+} from "react-native";
+
+import GoalItem from "./components/GoalItem";
 
 export default function App() {
-  const [goalEntered, setGoalEntered] = useState('');
+  const [goalEntered, setGoalEntered] = useState("");
   const [courseGoal, setCourseGoal] = useState([]);
 
-  const goalEnteredHandler =(enteredText) => {
+  const goalEnteredHandler = (enteredText) => {
     setGoalEntered(enteredText);
-  }
+  };
   const addGoalHandler = () => {
-    setCourseGoal(currentGoals => [...currentGoals, goalEntered])
-  }
+    setCourseGoal((currentGoals) => [
+      ...currentGoals,
+      { id: Math.random().toString(), value: goalEntered },
+    ]);
+  };
 
   return (
     <View style={style.screen}>
@@ -25,9 +38,13 @@ export default function App() {
         />
         <Button title="ADD" onPress={addGoalHandler} />
       </View>
-      <View>
-        {courseGoal.map(goal => <Text>{goal}</Text>)}
-      </View>
+      <FlatList
+      keyExtractor={(item,index) => item.id}
+        data={courseGoal}
+        renderItem={(itemData) => (
+          <GoalItem title={itemData.item.value}/>
+        )}
+      />
       <StatusBar style="auto" />
     </View>
   );
@@ -50,4 +67,5 @@ const style = StyleSheet.create({
   screen: {
     padding: 30,
   },
+  
 });
